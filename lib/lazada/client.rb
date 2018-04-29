@@ -1,5 +1,4 @@
 require 'httparty'
-require 'active_support/core_ext/hash'
 
 require 'lazada/api/product'
 require 'lazada/api/category'
@@ -8,6 +7,7 @@ require 'lazada/api/image'
 require 'lazada/api/order'
 require 'lazada/api/response'
 require 'lazada/api/brand'
+require 'lazada/api/auth'
 require 'lazada/exceptions/lazada'
 
 module Lazada
@@ -19,44 +19,57 @@ module Lazada
     include Lazada::API::Image
     include Lazada::API::Order
     include Lazada::API::Brand
+    include Lazada::API::Auth
 
     base_uri 'https://api.sellercenter.lazada.com.my'
 
     # Valid opts:
-    # - tld: Top level domain to use (.com.my, .sg, .th...). Default: com.my
+    # - tld: Top level domain to use (.com.my, .sg, .co.th...)
     # - debug: $stdout, Rails.logger. Log http requests
-    def initialize(api_key, user_id, opts = {})
-      @api_key = api_key
-      @user_id = user_id
-      @timezone = opts[:timezone] || 'UTC'
+    def initialize(app_key, app_secret, opts = {})
+      @app_key          = app_key
+      @app_secret       = app_secret
+      @timezone         = 'UTC'
+      @redirect_url     = opts[:redirect_url]
       @raise_exceptions = opts[:raise_exceptions] || true
+      @tld = opts[:tld]
 
-      self.class.base_uri "https://api.sellercenter.lazada#{opts[:tld]}" if opts[:tld].present?
-      self.class.debug_output opts[:debug] if opts[:debug].present?
+      self.class.base_uri "https://api.lazada#{opts[:tld]}/rest" unless opts[:tld].nil?
+      self.class.debug_output opts[:debug] unless opts[:debug].nil?
     end
 
     protected
 
-    def request_url(action, options = {})
+    def request_url(path, options = {})
+      is_auth = options[:is_auth] || false
       current_time_zone = @timezone
-      timestamp = Time.now.in_time_zone(current_time_zone).iso8601
+      # timestamp = Time.now.in_time_zone(current_time_zone).iso8601
+      timestamp = (Time.now.to_f * 1000).to_i
 
       parameters = {
-        'Action' => action,
-        'Filter' => options.delete('filter'),
-        'Format' => 'JSON',
-        'Timestamp' => timestamp,
-        'UserID' => @user_id,
-        'Version' => '1.0'
+        'app_key'     => @app_key,
+        'format'      => 'json',
+        'timestamp'   => timestamp,
+        'sign_method' => 'sha256',
       }
 
-      parameters = parameters.merge(options) if options.present?
+      # Hash keys to String keys
+      options.delete(:is_auth)
+      options.keys.each { |key| options[key.to_s] = options.delete(key) }
+      parameters  = parameters.merge(options) if options.present?
 
-      parameters = Hash[parameters.sort{ |a, b| a[0] <=> b[0] }]
-      params     = parameters.to_query
+      parameters  = Hash[parameters.sort{ |a, b| a[0] <=> b[0] }]
+      sign_string = parameters.map { |k,v| "#{k}#{v}" }.join
+      sign_string = path + sign_string
+      signature   = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), @app_secret, sign_string).upcase
+      
+      params      = parameters.to_query
 
-      signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), @api_key, params)
-      url = "/?#{params}&Signature=#{signature}"
+      if is_auth
+        "https://auth.lazada.com/rest#{path}?#{params}&sign=#{signature}"
+      else
+        "https://api.lazada#{@tld}/rest#{path}?#{params}&sign=#{signature}"
+      end
     end
 
     def process_response_errors!(response)

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lazada (0.3.3)
+    lazada-open-api (0.4)
       builder (~> 3.2)
       httparty (~> 0.13.7)
 
@@ -21,8 +21,8 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.11)
-  lazada!
+  lazada-open-api!
   rake (~> 10.0)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
