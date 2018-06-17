@@ -1,13 +1,19 @@
 module Lazada
   module API
     module Product
-      def get_products(status = 'all')
-        url = request_url('GetProducts', { 'filter' => status })
+      def get_products(opts = {})
+        # url = request_url('GetProducts', { 'filter' => status })
+        params = {
+          'filter' => opts[:filter] || 'live',
+          'limit' => opts[:limit]  || 500,
+          'offset' => opts[:offset] || 0,
+        }
+        url = request_url '/products/get', params
         response = self.class.get(url)
 
-        process_response_errors! response
+        # process_response_errors! response
 
-        response['SuccessResponse']['Body']['Products']
+        # response['SuccessResponse']['Body']['Products']
       end
 
       def create_product(params)
