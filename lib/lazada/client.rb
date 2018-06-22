@@ -21,6 +21,8 @@ module Lazada
     include Lazada::API::Brand
     include Lazada::API::Auth
 
+    attr_accessor :access_token
+
     base_uri 'https://api.sellercenter.lazada.com.my'
 
     # Valid opts:
@@ -33,6 +35,7 @@ module Lazada
       @redirect_url     = opts[:redirect_url]
       @raise_exceptions = opts[:raise_exceptions] || true
       @tld = opts[:tld]
+      @access_token     = nil
 
       self.class.base_uri "https://api.lazada#{opts[:tld]}/rest" unless opts[:tld].nil?
       self.class.debug_output opts[:debug] unless opts[:debug].nil?
@@ -47,10 +50,11 @@ module Lazada
       timestamp = (Time.now.to_f * 1000).to_i
 
       parameters = {
-        'app_key'     => @app_key,
-        'format'      => 'json',
-        'timestamp'   => timestamp,
-        'sign_method' => 'sha256',
+        'app_key'      => @app_key,
+        'format'       => 'json',
+        'timestamp'    => timestamp,
+        'sign_method'  => 'sha256',
+        'access_token' => @access_token
       }
 
       # Hash keys to String keys
