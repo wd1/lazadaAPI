@@ -23,19 +23,19 @@ module Lazada
 
     attr_accessor :access_token
 
-    base_uri 'https://api.sellercenter.lazada.com.my'
-
     # Valid opts:
     # - tld: Top level domain to use (.com.my, .sg, .co.th...)
     # - debug: $stdout, Rails.logger. Log http requests
+    # - redirect_url: for oauth code redirect
+    # - access_token: oauth access token 
     def initialize(app_key, app_secret, opts = {})
       @app_key          = app_key
       @app_secret       = app_secret
       @timezone         = 'UTC'
       @redirect_url     = opts[:redirect_url]
       @raise_exceptions = opts[:raise_exceptions] || true
-      @tld = opts[:tld]
-      @access_token     = nil
+      @tld              = opts[:tld]
+      @access_token     = opts[:access_token]
 
       self.class.base_uri "https://api.lazada#{opts[:tld]}/rest" unless opts[:tld].nil?
       self.class.debug_output opts[:debug] unless opts[:debug].nil?
@@ -46,6 +46,7 @@ module Lazada
     def request_url(path, options = {})
       is_auth = options[:is_auth] || false
       current_time_zone = @timezone
+      # ISO does not seem to be supported any longer by Lazada
       # timestamp = Time.now.in_time_zone(current_time_zone).iso8601
       timestamp = (Time.now.to_f * 1000).to_i
 
@@ -54,8 +55,9 @@ module Lazada
         'format'       => 'json',
         'timestamp'    => timestamp,
         'sign_method'  => 'sha256',
-        'access_token' => @access_token
       }
+
+      parameters.merge!({ 'access_token' => @access_token }) unless @access_token.nil?
 
       # Hash keys to String keys
       options.delete(:is_auth)
