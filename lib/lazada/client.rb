@@ -37,7 +37,6 @@ module Lazada
       @tld              = opts[:tld]
       @access_token     = opts[:access_token]
 
-      self.class.base_uri "https://api.lazada#{opts[:tld]}/rest" unless opts[:tld].nil?
       self.class.debug_output opts[:debug] unless opts[:debug].nil?
     end
 

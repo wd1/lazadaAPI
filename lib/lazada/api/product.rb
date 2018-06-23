@@ -11,9 +11,9 @@ module Lazada
         url = request_url '/products/get', params
         response = self.class.get(url)
 
-        # process_response_errors! response
+        process_response_errors! response
 
-        # response['SuccessResponse']['Body']['Products']
+        response['data']
       end
 
       def create_product(params)
