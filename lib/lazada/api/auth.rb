@@ -28,6 +28,8 @@ module Lazada
         private
 
         def process_auth_response(response)
+          raise Lazada::APIError.new if response['access_token'].nil?
+
           {
             access_token: response['access_token'],
             expires_in: response['expires_in'],
