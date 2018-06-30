@@ -1,3 +1,3 @@
 module Lazada
-  VERSION = "0.8"
+  VERSION = "0.9"
 end
