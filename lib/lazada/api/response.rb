@@ -58,8 +58,8 @@ module Lazada
         hash
       end
 
-      def [](ind)
-        @response['data'][ind]
+      def [](idx)
+        response[idx]
       end
     end
   end

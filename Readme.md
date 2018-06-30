@@ -14,6 +14,7 @@ The following APIs have been tested to be working:
 | `/order/get` | `order_id` | Tested and Working |
 | `/order/items/get` | `order_id` | Tested and Working |
 | `/orders/items/get` | `order_ids` | Tested and Working |
+| `/brands/get` | `offset`, `limit` | Tested and Working |
 | `/product/create` | | Not tested |
 | `/product/update`| | Not tested |
 | `/image/migrate` | | Not tested | 

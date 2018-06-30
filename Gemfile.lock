@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lazada-open-api (0.8)
+    lazada-open-api (0.10)
       builder (~> 3.2)
       httparty (~> 0.13.7)
 
