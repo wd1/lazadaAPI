@@ -8,7 +8,7 @@ module Lazada
       end
 
       def request_id
-        response.dig('SuccessResponse', 'Head', 'RequestId')
+        response&.dig 'request_id'
       end
 
       def success?
@@ -56,6 +56,10 @@ module Lazada
         end
 
         hash
+      end
+
+      def [](ind)
+        @response['data'][ind]
       end
     end
   end

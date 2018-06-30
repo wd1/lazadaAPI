@@ -13,13 +13,13 @@ module Lazada
 
         process_response response
 
-        response['data']
+        Lazada::API::Response.new response
       end
 
       def create_product(params)
         url = request_url('CreateProduct')
 
-        params = { 'Product' => product_params(params) }
+        params = { 'payload' => product_params(params) }
 
         response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true, dasherize: false))
 
@@ -27,7 +27,7 @@ module Lazada
       end
 
       def update_product(params)
-        url = request_url('UpdateProduct')
+        url = request_url('/product/update')
 
         params = { 'Product' => product_params(params) }
         response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true, dasherize: false))

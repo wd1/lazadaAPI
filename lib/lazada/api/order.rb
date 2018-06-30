@@ -15,7 +15,7 @@ module Lazada
 
         process_response response
 
-        response['data']
+        Lazada::API::Response.new response
       end
 
       def get_order(id)
@@ -24,7 +24,7 @@ module Lazada
 
         process_response response
 
-        response['data']
+        Lazada::API::Response.new response
       end
 
       def get_order_items(id)
@@ -33,7 +33,7 @@ module Lazada
 
         process_response response
 
-        response['data']
+        Lazada::API::Response.new response
       end
 
       def get_multiple_order_items(ids_list)
@@ -44,7 +44,7 @@ module Lazada
 
         process_response response
 
-        response['data']
+        Lazada::API::Response.new response
       end
     end
   end
