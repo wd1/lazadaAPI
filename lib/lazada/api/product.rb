@@ -11,30 +11,29 @@ module Lazada
         url = request_url '/products/get', params
         response = self.class.get(url)
 
-        process_response response
-
-        Lazada::API::Response.new response
+        lz_res = Lazada::API::Response.new response
+        process_response lz_res
+        lz_res
       end
 
-      def create_product(params)
-        url = request_url('CreateProduct')
+      def update_product(product_attributes)
+        
+        params = { 'Product' => product_params(product_attributes)  }
+        
+        api_params = { 
+          'payload' => params.to_xml(
+            root: 'Request', 
+            skip_types: true,
+            dasherize: false)
+        }
 
-        params = { 'payload' => product_params(params) }
+        url = request_url('/product/update', api_params)
+        
+        response = self.class.post(url)
 
-        response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true, dasherize: false))
-
-        Lazada::API::Response.new(response)
-      end
-
-      def update_product(params)
-        url = request_url('/product/update')
-
-        params = { 'Product' => product_params(params) }
-        response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true, dasherize: false))
-
-        process_response response
-
-        Lazada::API::Response.new(response)
+        lz_res = Lazada::API::Response.new(response)
+        process_response lz_res
+        lz_res
       end
 
       def remove_product(seller_sku)
@@ -69,7 +68,7 @@ module Lazada
 
       def product_params(object)
         params = {}
-        params['PrimaryCategory'] = object[:primary_category]
+        params['primary_category'] = object[:primary_category]
         params['SPUId'] = ''
         params['AssociatedSku'] = ''
         params['Attributes'] = {
@@ -93,7 +92,7 @@ module Lazada
           'package_width' => object[:package_width],
           'package_content' => object[:package_content],
           'tax_class' => object[:tax_class] || 'default',
-          'status' => object[:status]
+          'Status ' => object[:status]
         }
 
         if object[:special_price].present?

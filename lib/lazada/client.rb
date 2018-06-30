@@ -77,10 +77,17 @@ module Lazada
       end
     end
 
-    def process_response(response)
-      process_response_errors! response
+    def process_response(lazada_response)
+      return unless @raise_exceptions
 
-      response
+      if lazada_response.error?
+        raise Lazada::APIError.new(
+          code: lazada_response.code,
+          message: lazada_response.error_message,
+        ) 
+      end
+
+      lazada_response
     end
 
     private

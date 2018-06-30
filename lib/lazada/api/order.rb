@@ -13,27 +13,27 @@ module Lazada
         url = request_url('/orders/get', params)
         response = self.class.get(url)
 
-        process_response response
-
-        Lazada::API::Response.new response
+        lz_res = Lazada::API::Response.new response
+        process_response lz_res
+        lz_res
       end
 
       def get_order(id)
         url = request_url('/order/get', { 'order_id' => id })
         response = self.class.get(url)
 
-        process_response response
-
-        Lazada::API::Response.new response
+        lz_res = Lazada::API::Response.new response
+        process_response lz_res
+        lz_res
       end
 
       def get_order_items(id)
         url = request_url('/order/items/get', { 'order_id' => id })
         response = self.class.get(url)
 
-        process_response response
-
-        Lazada::API::Response.new response
+        lz_res = Lazada::API::Response.new response
+        process_response lz_res
+        lz_res
       end
 
       def get_multiple_order_items(ids_list)
@@ -42,9 +42,9 @@ module Lazada
         url = request_url('/orders/items/get', { 'order_ids' => "[#{ids_list.join(',')}]"})
         response = self.class.get(url)
 
-        process_response response
-
-        Lazada::API::Response.new response
+        lz_res = Lazada::API::Response.new response
+        process_response lz_res
+        lz_res
       end
     end
   end
