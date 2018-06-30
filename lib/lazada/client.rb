@@ -77,6 +77,14 @@ module Lazada
       end
     end
 
+    def process_response(response)
+      process_response_errors! response
+
+      response
+    end
+
+    private
+
     def process_response_errors!(response)
       return unless @raise_exceptions
 

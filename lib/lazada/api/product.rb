@@ -11,7 +11,7 @@ module Lazada
         url = request_url '/products/get', params
         response = self.class.get(url)
 
-        process_response_errors! response
+        process_response response
 
         response['data']
       end
@@ -32,7 +32,7 @@ module Lazada
         params = { 'Product' => product_params(params) }
         response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true, dasherize: false))
 
-        process_response_errors! response
+        process_response response
 
         Lazada::API::Response.new(response)
       end
@@ -60,7 +60,7 @@ module Lazada
 
         response = self.class.get(url)
 
-        process_response_errors! response
+        process_response response
 
         response['SuccessResponse']['Body']['Status']
       end
