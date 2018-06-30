@@ -15,6 +15,44 @@ The following APIs have been tested to be working:
 | `/order/items/get` | `order_id` | Tested and Working |
 | `/orders/items/get` | `order_ids` | Tested and Working |
 
+# Quickstart
+
+Create a client with
+
+```
+client_auth = Lazada::Client.new(
+   app_key, 
+   app_secret,
+   tld: '.sg',
+   redirect_url: 'my-redirect.com',
+   use_access_token: false
+)
+```
+
+Create an access token with the following steps:
+
+a. Take the user to the sign in URL
+```
+client_auth.lazada_sign_in_url
+
+```
+
+b. After sign in, the user will be redirected to `myredirect.com/?code=<oauth_code>`. Use it to create an access token
+
+```
+response = client_auth.create_access_token(oauth_code)
+```
+The response contains the `access_token` and `refresh_token.` You can use them in following requests like 
+
+```
+client = Lazada::Client.new(
+    app_key,
+    app_secret,
+    tld: '.sg',
+    timezone: Time.zone,
+    access_token: access_token,
+)
+```
 
 # Contributions
 
