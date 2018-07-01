@@ -11,33 +11,43 @@ module Lazada
       end
 
       def migrate_image(image_url)
-        url = request_url('MigrateImage')
+        xml = {
+            'Image' => { 'Url' => image_url }
+        }.to_xml(
+          root: 'Request', 
+          skip_types: true, 
+          dasherize: false
+        )
 
-        params = { 'Image' => { 'Url' => image_url } }
-        response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true))
+        params = { payload: xml }
+        url = request_url('/image/migrate', params)
+        response = self.class.post(url)
 
-        process_response_errors! response
-
-        response['SuccessResponse'].present? ? response['SuccessResponse']['Body']['Image']['Url'] : ''
+        lazada_response = Lazada::API::Response.new response
+        process_response lazada_response
       end
 
       def migrate_images(image_url_list)
-        url = request_url('MigrateImages')
-
         # Allow duplicate keys in dict
         urls = {}.compare_by_identity
-        image_url_list.each { |image_url| urls.merge!({ String.new('Url') => image_url }) }
+        image_url_list.each do |image_url| 
+          urls.merge! String.new('Url') => image_url
+        end
 
-        params = { 'Images' => urls }
+        xml = { 
+            'Images' => urls
+          }.to_xml(
+            root: 'Request',
+            skip_types: true,
+            dasherize: false
+          )
+          
+        params = { payload: xml }
+        url = request_url('/images/migrate', params)
+        response = self.class.post(url)
 
-        response = self.class.post(url, body: params.to_xml(root: 'Request', skip_types: true))
-
-        process_response_errors! response
-
-        # At the moment of this writing, the API does not seem to be working in Lazada
-        # The response is successful, but does not return a body with the details
-        # of the migrated images.
-        response['SuccessResponse'].present? ? response['SuccessResponse'] : nil
+        lazada_response = Lazada::API::Response.new response
+        process_response lazada_response
       end
 
     end

@@ -16,9 +16,9 @@ The following APIs have been tested to be working:
 | `/orders/items/get` | `order_ids` | Tested and Working |
 | `/brands/get` | `offset`, `limit` | Tested and Working |
 | `/product/create` | | Not tested |
-| `/product/update`| | Not tested |
-| `/image/migrate` | | Not tested | 
-| `/images/migrate` | | Not tested | 
+| `/product/update`| `payload (product)` | Tested and Working |
+| `/image/migrate` | `url` | Tested and Working | 
+| `/images/migrate` | `urls` | Tested and Working | 
 | `/image/upload` | | Not tested | 
 
 

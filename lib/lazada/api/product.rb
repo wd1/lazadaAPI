@@ -24,7 +24,8 @@ module Lazada
           'payload' => params.to_xml(
             root: 'Request', 
             skip_types: true,
-            dasherize: false)
+            dasherize: false
+          )
         }
 
         url = request_url('/product/update', api_params)
@@ -112,10 +113,8 @@ module Lazada
         params['Skus']['Sku']['Images'].compare_by_identity
 
         if object[:images].present?
-          object[:images].each do |image|
-            url = migrate_image(image)
-
-            params['Skus']['Sku']['Images']['Image'.dup] = url
+          object[:images].each do |image_url|
+            params['Skus']['Sku']['Images']['Image'.dup] = image_url
           end
         end
 

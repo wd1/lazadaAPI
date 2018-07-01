@@ -82,8 +82,11 @@ module Lazada
 
       if lazada_response.error?
         raise Lazada::APIError.new(
+          lazada_response.error_message,
           code: lazada_response.code,
           message: lazada_response.error_message,
+          request: lazada_response,
+          response: lazada_response.response,
         ) 
       end
 
