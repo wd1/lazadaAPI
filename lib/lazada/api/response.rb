@@ -2,9 +2,11 @@ module Lazada
   module API
     class Response
       attr_reader :response
+      attr_reader :request
 
       def initialize(response)
         @response = response
+        @request = response.request
       end
 
       def request_id

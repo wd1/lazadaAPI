@@ -9,6 +9,7 @@ module Lazada
   class APIError < LazadaError
     attr_reader :http_code
     attr_reader :response
+    attr_reader :request
 
     attr_reader :error_type
     attr_reader :error_code
@@ -20,6 +21,7 @@ module Lazada
 
       @http_code = params[:http_code]
       @response = params[:response]
+      @request = params[:request]
 
       @error_type = params[:error_type]
       @error_code = params[:error_code]
