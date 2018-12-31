@@ -1,5 +1,4 @@
 module Lazada
-
   class LazadaError < StandardError
     def initialize(message = nil)
       super message
@@ -7,26 +6,20 @@ module Lazada
   end
 
   class APIError < LazadaError
-    attr_reader :http_code
     attr_reader :response
     attr_reader :request
 
-    attr_reader :error_type
-    attr_reader :error_code
-    attr_reader :error_message
-    attr_reader :error_detail
+    attr_reader :code
+    attr_reader :message
 
     def initialize(message = nil, params = {})
       super message
 
-      @http_code = params[:http_code]
       @response = params[:response]
       @request = params[:request]
 
-      @error_type = params[:error_type]
-      @error_code = params[:error_code]
-      @error_message = params[:error_message]
-      @error_detail = params[:error_detail]
+      @code = params[:code]
+      @message = params[:message]
     end
   end
 end

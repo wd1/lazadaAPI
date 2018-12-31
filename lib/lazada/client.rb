@@ -82,36 +82,15 @@ module Lazada
 
       if lazada_response.error?
         raise Lazada::APIError.new(
-          lazada_response.error_message,
-          code: lazada_response.code,
-          message: lazada_response.error_message,
+          lazada_response.error_details,
           request: lazada_response,
           response: lazada_response.response,
-        ) 
+          code: lazada_response.code,
+          message: lazada_response.error_details,
+        )
       end
 
       lazada_response
     end
-
-    private
-
-    def process_response_errors!(response)
-      return unless @raise_exceptions
-
-      parsed_response = Lazada::API::Response.new(response)
-
-      if parsed_response.error?
-        raise Lazada::APIError.new(
-          "Lazada API Error: '#{parsed_response.error_message}'",
-          http_code: response&.code,
-          response: response&.inspect,
-          error_type: parsed_response.error_type,
-          error_code: parsed_response.error_code,
-          error_message: parsed_response.error_message,
-          error_detail: parsed_response.body_error_messages
-        )
-      end
-    end
   end
-
 end
