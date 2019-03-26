@@ -35,12 +35,17 @@ module Lazada
       end
 
       # {"code"=>"501", "type"=>"ISP", "message"=>"E501: Update product failed", "detail"=>[{"field"=>"Product", "message"=>"Category is inactive"}], "request_id"=>"xxxxxxxxxxxxxx60"}
+      # {"code"=>"998", "type"=>"ISP", "message"=>"To ensure stability of service, this API service is disabled, please get more information from Notice.", "request_id"=>"0bxxxxx"}
       def error_details
-        response.dig("detail").map { |d| "#{d.dig("field")}: #{d.dig("message")}" }.join(". ")
+        response.dig("detail")&.map { |d| "#{d.dig("field")}: #{d.dig("message")}" }&.join(". ")
       end
 
       def [](idx)
         response[idx]
+      end
+
+      def to_s
+        "request: #{@request}\n response: #{@response}"
       end
     end
   end
