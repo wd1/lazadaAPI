@@ -8,6 +8,8 @@ module Lazada
           "limit" => opts[:limit] || 500,
           "offset" => opts[:offset] || 0,
         }
+        params.merge! "update_after" => opts[:updated_after].iso8601 if opts[:updated_after].present?
+
         url = request_url "/products/get", params
         response = self.class.get(url)
 
